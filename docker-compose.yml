@@ -15,21 +15,12 @@ services:
       LARAVEL_SAIL: 1
     volumes:
       - ".:/var/www/html"
-      - "../playlistFinder:/var/playlistdetective-scrapper"
+      - "./scrapper:/var/playlistdetective-scrapper"
     networks:
       - sail
     depends_on:
       - mysql
       - redis
-      # - selenium
-  # selenium:
-  #     image: 'selenium/standalone-chrome'
-  #     volumes:
-  #         - '/dev/shm:/dev/shm'
-  #     networks:
-  #         - sail
-  #     depends_on:
-  #         - laravel.test
   mysql:
     image: "mysql:8.0"
     ports:
@@ -52,12 +43,6 @@ services:
       - "sailredis:/data"
     networks:
       - sail
-  # memcached:
-  #     image: 'memcached:alpine'
-  #     ports:
-  #         - '11211:11211'
-  #     networks:
-  #         - sail
   mailhog:
     image: "mailhog/mailhog:latest"
     ports:

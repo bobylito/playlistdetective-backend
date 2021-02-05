@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Events\PlaylistsUpdateFailure;
+use App\Events\PlaylistsUpdateSuccess;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,11 +26,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-
         $schedule
             ->exec('cd /var/playlistdetective-scrapper && ./bin/updateAlgolia')
             ->appendOutputTo('./playlistdetective-scrapper.log')
+            ->onFailure(function () {
+                PlaylistsUpdateFailure::dispatch();
+            })
+            ->onSuccess(function () {
+                PlaylistsUpdateSuccess::dispatch();
+            })
             ->everyMinute()
             ->withoutOverlapping();
     }
